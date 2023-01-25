@@ -4,11 +4,13 @@ import javax.swing.table.AbstractTableModel;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class PersonTableModel extends AbstractTableModel {
     private static final int COLUMN_COUNT = 8;
-    SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
+    SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
     private List<String[]> dataList;
 
     public PersonTableModel() {
@@ -51,6 +53,7 @@ public class PersonTableModel extends AbstractTableModel {
 
     @Override
     public Class<?> getColumnClass(int columnIndex) {
+
         return String.class;
     }
 
@@ -81,6 +84,7 @@ public class PersonTableModel extends AbstractTableModel {
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         String[] rows = dataList.get(rowIndex);
+
         return rows[columnIndex];
     }
 
@@ -121,7 +125,15 @@ public class PersonTableModel extends AbstractTableModel {
     @Override
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
         String[] str = dataList.get(rowIndex);
-        str[columnIndex] = aValue.toString();
+        if (columnIndex == 4 && aValue instanceof Date) {
+            str[columnIndex] = dateFormat.format(aValue);
+        } else {
+            str[columnIndex] = aValue.toString();
+        }
         dataList.set(rowIndex, str);
+    }
+
+    public void cleanTable(){
+        dataList =  new ArrayList<>();
     }
 }

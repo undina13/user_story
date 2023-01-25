@@ -5,17 +5,21 @@ import com.project.user_story.controller.UtilLoad;
 import com.project.user_story.controller.UtilSerialize;
 import com.project.user_story.model.Person;
 import com.project.user_story.model.PersonTableModel;
+import org.jdesktop.swingx.table.DatePickerCellEditor;
 
 import javax.swing.*;
+import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 
 public class Gui extends JFrame {
 
-    private PersonTableModel myPersonTableModel;
+    private PersonTableModel personTableModel;
     private JTable table;
 
     public Gui() {
@@ -25,8 +29,20 @@ public class Gui extends JFrame {
 
         Container container = this.getContentPane();
         container.setLayout(new GridBagLayout());
-        myPersonTableModel = new PersonTableModel();
-        table = new JTable(myPersonTableModel);
+        personTableModel = new PersonTableModel();
+        table = new JTable(personTableModel);
+
+        TableColumn hasDocumentsColumn = table.getColumnModel().getColumn(7);
+        JComboBox<String> comboBox = new JComboBox<>();
+        comboBox.addItem("true");
+        comboBox.addItem("false");
+        hasDocumentsColumn.setCellEditor(new DefaultCellEditor(comboBox));
+
+        TableColumn dateOfBirthColumn = table.getColumnModel().getColumn(4);
+        DatePickerCellEditor datePickerCellEditor = new DatePickerCellEditor(new SimpleDateFormat("dd.MM.yyyy",
+                Locale.getDefault()));
+        dateOfBirthColumn.setCellEditor(datePickerCellEditor);
+
         JScrollPane jScrollPane = new JScrollPane(table);
         jScrollPane.setPreferredSize(new Dimension(400, 400));
         container.add(jScrollPane, new GridBagConstraints(0, 0, 0, 1, 1, 0,
@@ -46,7 +62,8 @@ public class Gui extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             List<Person> people = UtilLoad.loadFromFile();
-            myPersonTableModel.addDateFromModelList(people);
+            personTableModel.cleanTable();
+            personTableModel.addDateFromModelList(people);
             table.updateUI();
         }
     }
@@ -55,7 +72,7 @@ public class Gui extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             try {
-                List<Person> people = myPersonTableModel.getModels();
+                List<Person> people = personTableModel.getModels();
                 UtilSerialize.Serialize(people);
             } catch (ParseException | JsonProcessingException parseException) {
                 parseException.printStackTrace();

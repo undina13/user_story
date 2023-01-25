@@ -9,6 +9,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -61,6 +62,10 @@ public class UtilLoad {
 
     private static Workbook getWorkbook() {
         JFileChooser fc = new JFileChooser();
+        fc.setDialogTitle("Выберите файл");
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("xls, xlsx", "xls", "xlsx");
+        fc.setFileFilter(filter);
+
         if (fc.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
             progressBar = new ProgressBar();
             try (FileInputStream fileStream = new FileInputStream(fc.getSelectedFile())) {
