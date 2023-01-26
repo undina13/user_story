@@ -1,11 +1,9 @@
 package com.project.user_story.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.project.user_story.model.Person;
 import com.project.user_story.model.PersonDto;
-import com.project.user_story.view.ProgressBar;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -15,10 +13,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TimeZone;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class UtilSerialize {
+    private static final Logger logger = Logger.getLogger(UtilSerialize.class.getName());
 
-    public static void Serialize(List<Person> people) throws JsonProcessingException {
+    private UtilSerialize() {
+    }
+
+    public static void serialize(List<Person> people) {
         List<PersonDto> personDtoList = new ArrayList<>();
         for (Person person : people) {
             personDtoList.add(new PersonDto(person));
@@ -27,7 +31,6 @@ public class UtilSerialize {
     }
 
     private static void writeInFile(List<PersonDto> personDtoList) {
-
         ObjectMapper mapper = new ObjectMapper();
         mapper.setTimeZone(TimeZone.getDefault());
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
@@ -43,14 +46,10 @@ public class UtilSerialize {
                 filename = filename + ".json";
                 fc.setSelectedFile(new File(filename));
             }
-            ProgressBar progressBar = new ProgressBar();
             try (FileWriter fw = new FileWriter(fc.getSelectedFile())) {
-
                 fw.write(mapper.writeValueAsString(personDtoList));
             } catch (IOException e) {
-                System.out.println("Не могу записать файл");
-            } finally {
-                progressBar.close();
+                logger.log(Level.WARNING, "Ошибка при записи файла");
             }
         }
     }

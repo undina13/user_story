@@ -10,6 +10,14 @@ import java.util.Locale;
 
 public class PersonTableModel extends AbstractTableModel {
     private static final int COLUMN_COUNT = 8;
+    private static final int ID = 0;
+    private static final int LAST_NAME = 1;
+    private static final int FIRST_NAME = 2;
+    private static final int MIDDLE_NAME = 3;
+    private static final int DATE_OF_BIRTH = 4;
+    private static final int HEIGHT = 5;
+    private static final int WEIGHT = 6;
+    private static final int HAS_DOCUMENTS = 7;
     SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
     private List<String[]> dataList;
 
@@ -30,21 +38,21 @@ public class PersonTableModel extends AbstractTableModel {
     @Override
     public String getColumnName(int columnIndex) {
         switch (columnIndex) {
-            case 0:
+            case ID:
                 return "id";
-            case 1:
+            case LAST_NAME:
                 return "Фамилия";
-            case 2:
+            case FIRST_NAME:
                 return "Имя";
-            case 3:
+            case MIDDLE_NAME:
                 return "Отчество";
-            case 4:
+            case DATE_OF_BIRTH:
                 return "Дата рождения";
-            case 5:
+            case HEIGHT:
                 return "Рост";
-            case 6:
+            case WEIGHT:
                 return "Вес";
-            case 7:
+            case HAS_DOCUMENTS:
                 return "Сдал документы";
             default:
                 return "";
@@ -53,28 +61,17 @@ public class PersonTableModel extends AbstractTableModel {
 
     @Override
     public Class<?> getColumnClass(int columnIndex) {
-
         return String.class;
     }
 
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) {
         switch (columnIndex) {
-            case 0:
-                return false;
-            case 1:
-                return true;
-            case 2:
-                return true;
-            case 3:
-                return true;
-            case 4:
-                return true;
-            case 5:
-                return false;
-            case 6:
-                return false;
-            case 7:
+            case LAST_NAME:
+            case FIRST_NAME:
+            case MIDDLE_NAME:
+            case DATE_OF_BIRTH:
+            case HAS_DOCUMENTS:
                 return true;
             default:
                 return false;
@@ -84,7 +81,6 @@ public class PersonTableModel extends AbstractTableModel {
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         String[] rows = dataList.get(rowIndex);
-
         return rows[columnIndex];
     }
 
@@ -109,14 +105,14 @@ public class PersonTableModel extends AbstractTableModel {
     public List<Person> getModels() throws ParseException {
         List<Person> people = new ArrayList<>();
         for (String[] str : dataList) {
-            Person person = new Person(Integer.parseInt(str[0]),
-                    str[1],
-                    str[2],
-                    str[3],
-                    dateFormat.parse(str[4]),
-                    Integer.parseInt(str[5]),
-                    Double.parseDouble(str[6]),
-                    Boolean.parseBoolean(str[7]));
+            Person person = new Person(Integer.parseInt(str[ID]),
+                    str[LAST_NAME],
+                    str[FIRST_NAME],
+                    str[MIDDLE_NAME],
+                    dateFormat.parse(str[DATE_OF_BIRTH]),
+                    Integer.parseInt(str[HEIGHT]),
+                    Double.parseDouble(str[WEIGHT]),
+                    Boolean.parseBoolean(str[HAS_DOCUMENTS]));
             people.add(person);
         }
         return people;
@@ -125,7 +121,7 @@ public class PersonTableModel extends AbstractTableModel {
     @Override
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
         String[] str = dataList.get(rowIndex);
-        if (columnIndex == 4 && aValue instanceof Date) {
+        if (columnIndex == DATE_OF_BIRTH && aValue instanceof Date) {
             str[columnIndex] = dateFormat.format(aValue);
         } else {
             str[columnIndex] = aValue.toString();
@@ -133,7 +129,7 @@ public class PersonTableModel extends AbstractTableModel {
         dataList.set(rowIndex, str);
     }
 
-    public void cleanTable(){
-        dataList =  new ArrayList<>();
+    public void cleanTable() {
+        dataList = new ArrayList<>();
     }
 }
