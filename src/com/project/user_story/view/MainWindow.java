@@ -11,6 +11,9 @@ import java.awt.*;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
+
+import org.oxbow.swingbits.table.filter.TableRowFilterSupport;
+
 @Getter
 public class MainWindow extends JFrame {
     MainWindowController controller;
@@ -25,10 +28,14 @@ public class MainWindow extends JFrame {
         this.setBounds(100, 100, 700, 700);
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
+
+
         Container container = this.getContentPane();
         container.setLayout(new GridBagLayout());
         personTableModel = new PersonTableModel();
         table = new JTable(personTableModel);
+        TableRowFilterSupport.forTable(table).searchable(true).apply();
+
 
         TableColumn hasDocumentsColumn = table.getColumnModel().getColumn(7);
         JComboBox<String> comboBox = new JComboBox<>();
